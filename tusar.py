@@ -207,69 +207,29 @@ BUTTONS = InlineKeyboardMarkup([
 ])
 
 #=================== TELEGRAM ID INFORMATION =============
-
-@bot.on_message(filters.private & filters.command("info"))
-async def info(bot: Client, update: Message):
-    
-    text = f"""--**✨ Information**--
-
-**🙋🏻‍♂️ First Name :** {update.from_user.first_name}
-**🧖‍♂️ Your Second Name :** {update.from_user.last_name if update.from_user.last_name else 'None'}
-**🧑🏻‍🎓 Your Username :** {update.from_user.username}
-**🆔 Your Telegram ID :** {update.from_user.id}
-**🔗 Your Profile Link :** {update.from_user.mention}"""
-    
+@bot.on_message(filters.private & filters.command(["info"]))
+async def info(bot: Client, update: Message):    
+    text = (
+        f"╭────────────────╮\n"
+        f"│✨ **__Your Telegram Info__**✨ \n"
+        f"├────────────────\n"
+        f"├🔹**Name :** `{update.from_user.first_name} {update.from_user.last_name if update.from_user.last_name else 'None'}`\n"
+        f"├🔹**User ID :** @{update.from_user.username}\n"
+        f"├🔹**TG ID :** `{update.from_user.id}`\n"
+        f"├🔹**Profile :** {update.from_user.mention}\n"
+        f"╰────────────────╯"
+    )    
     await update.reply_text(        
         text=text,
         disable_web_page_preview=True,
         reply_markup=BUTTONS
     )
-
-
-@bot.on_message(filters.private & filters.command("id"))
-async def id(bot: Client, update: Message):
-    if update.chat.type == "channel":
-        await update.reply_text(
-            text=f"**This Channel's ID:** {update.chat.id}",
-            disable_web_page_preview=True
-        )
-    else:
-        await update.reply_text(        
-            text=f"**Your Telegram ID :** {update.from_user.id}",
-            disable_web_page_preview=True,
-            reply_markup=BUTTONS
-        )  
-
-# Command to get user ID
-@bot.on_message(filters.private & filters.command("id"))
-async def user_id(bot: Client, update: Message):
-    user = update.from_user
-    text = f"""--**User Information**--
-
-🙋 **User Name :** {user.first_name}
-🆔 **User ID :** `{user.id}`
-🔗 **Profile Link :** {user.mention}"""
-    
-    await update.reply_text(text, disable_web_page_preview=True, reply_markup=BUTTONS)
-
-# Callback handler for button
-@bot.on_callback_query()
-async def callback_handler(bot: Client, query):
-    if query.data == "bot_id":
-        bot_user = await bot.get_me()
-        await query.message.edit_text(
-            f"🤖 **Bot ID:** `{bot_user.id}`",
-            reply_markup=BUTTONS
-        )
-    elif query.data == "user_id":
-        user = query.from_user
-        await query.message.edit_text(
-            f"🙋 **User ID:** `{user.id}`",
-            reply_markup=BUTTONS
-        ) 
-
-
-
+BUTTONS = InlineKeyboardMarkup([[InlineKeyboardButton(text="📞 Contact", url=f"https://t.me/+-UUAslfhnugyZjZl")]])
+# /id Command - Show Group/Channel ID
+@bot.on_message(filters.command(["id"]))
+async def id_command(client, message: Message):
+    chat_id = message.chat.id
+    await message.reply_text(f"**ID : `{chat_id}`**\n\n")
 @bot.on_message(filters.command('t2t'))
 async def text_to_txt(client, message: Message):
     user_id = str(message.from_user.id)
@@ -847,10 +807,10 @@ async def upload(bot: Client, m: Message):
                 cmd = f'yt-dlp -f "{ytf}" "{url}" -o "{name}.mp4"'
 
             try:
-                cc = f'✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦\n\n[🎥]𝐕ɪᴅᴇᴏ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤{name1}\n├── 𝗥𝗲𝘀𝗼𝗹𝘂𝘁𝗶𝗼𝗻 ➤ [{res}]\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.mkv<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤ {CR}\n\n✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦**'
-                cc1 = f'✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦\n\n[📕] 𝐅ɪʟᴇ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤{name1}\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.pdf\n<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤{CR}\n\n✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦**'                          
-                cczip = f'✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦\n\n[🎥]𝐕ɪᴅᴇᴏ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤{name1}\n├── 𝗥𝗲𝘀𝗼𝗹𝘂𝘁𝗶𝗼𝗻 ➤ [{res}]\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.mkv<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤ {CR}\n\n✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦**'
-                cczip= f'✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦\n\n[📕] 𝐅ɪʟᴇ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤{name1}\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.pdf\n<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤{CR}\n\n✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦**'                       
+                cc = f'`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`\n\n[🎥]𝐕ɪᴅᴇᴏ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤`{name1}`\n├── 𝗥𝗲𝘀𝗼𝗹𝘂𝘁𝗶𝗼𝗻 ➤ [{res}]\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.mkv<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤ {CR}\n\n`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`**'
+                cc1 = f'`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`\n\n[📕] 𝐅ɪʟᴇ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤`{name1}`\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.pdf\n<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤{CR}\n\n`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦**'                          
+                cczip = f'`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`\n\n[🎥]𝐕ɪᴅᴇᴏ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤`{name1}`\n├── 𝗥𝗲𝘀𝗼𝗹𝘂𝘁𝗶𝗼𝗻 ➤ [{res}]\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.mkv<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤ {CR}\n\n`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`**'
+                cczip= f'`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`\n\n[📕] 𝐅ɪʟᴇ 𝐈𝐃 ➤{str(count).zfill(3)}\n├──𝐓ɪᴛʟᴇ:➤`{name1}`\n├── 𝗙𝗼𝗿𝗺𝗮𝘁 ➤ 🇭‌🇦‌🇷‌🇮‌🇴‌🇲‌🤗.pdf\n<pre><code>📘 𝗕𝗮𝘁𝗰𝗵 𝗡𝗮𝗺𝗲 ➤ {b_name}</code></pre>\n\n🚀 𝗘𝘅𝘁𝗿𝗮𝗰𝘁𝗲𝗱 𝗕𝘆 :➤{CR}\n\n`✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦✦`**'                       
                         
                     
                 if "drive" in url:
